@@ -15,7 +15,7 @@ Future<void> genLanguageJson(List<String> arguments) async {
         defaultsTo: 'assets/languages')
     ..addOption('excelPath',
         abbr: 'e', help: 'Excel relative path', defaultsTo: 'translation.xlsx')
-    ..addFlag('help', abbr: 'h', help: 'Print this usage information', negatable: false);
+    ..addFlag('helpFlag', abbr: 'h', help: 'Print this usage information', negatable: false);
   final ArgResults argResults = argParser.parse(arguments);
   final String _excelPath = argResults['excelPath'];
   final String _saveDir = argResults['saveDir'];

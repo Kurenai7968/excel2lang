@@ -1,11 +1,12 @@
 name: translation2json
 description: Generate localization json file by excel file
 version: 0.0.1
-homepage:
+homepage: null
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dev_dependencies:
+  args: ^2.2.0
   excel: ^2.0.0-null-safety-3
   test: ^1.15.7

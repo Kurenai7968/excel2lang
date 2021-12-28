@@ -69,8 +69,31 @@ Future<void> genLanguageFile(List<String> arguments) async {
     }
   }
 
-  await Future.forEach<Language>(
-    _languages.values,
-    (lang) async => await lang.generateLanguageFile(),
-  ).then((_) => print('Language file is generated finish'));
+  Future<void> _generateLanguageDataFile() async {
+    File langFile = File('${_dir.path}/language_data.dart');
+    String data = '';
+    if (_extension == 'dart') {
+      _languages.values.forEach((lang) {
+        data += "part '${lang.locale}.dart';\n";
+      });
+      data += '\n';
+      data += 'Map<String, Map<String, String>> language_data = {\n';
+      _languages.values.forEach((lang) {
+        data += "\t'${lang.locale}': ${lang.locale},\n";
+      });
+      data += '};';
+      await langFile.writeAsString(data).then(
+          (value) => print('language_data is generated at ${langFile.path}'));
+    }
+  }
+
+  try {
+    await Future.forEach<Language>(_languages.values, (lang) async {
+      await lang.generateLanguageFile();
+    });
+    await _generateLanguageDataFile();
+    print('Language file is generated finish');
+  } catch (e) {
+    print(e);
+  }
 }

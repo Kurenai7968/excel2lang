@@ -12,15 +12,15 @@ class Language {
     if (!dir.existsSync()) await dir.create(recursive: true);
     String fileName = '$locale.$extension';
 
-    File langFile = File('${dir.path}/$fileName');
+    File file = File('${dir.path}/$fileName');
     String json = jsonEncode(lang);
     String prettyJson = _prettyJson(json);
-    String dartMap =
-        '// ignore: constant_identifier_names\nconst Map<String, String> $locale = ${prettyJson};';
+    String dartMap = _dartMap(prettyJson);
     String result = extension == 'dart' ? dartMap : prettyJson;
 
-    await langFile.writeAsString(result).then(
-        (value) => print('$locale is generated at ${dir.path}/$fileName'));
+    await file
+        .writeAsString(result)
+        .then((value) => print('$locale is generated at ${file.path}'));
   }
 
   String _prettyJson(String input) {
@@ -29,5 +29,12 @@ class Language {
     var object = decoder.convert(input);
     var prettyString = encoder.convert(object);
     return prettyString;
+  }
+
+  String _dartMap(String json) {
+    String dartMap = "part of 'language_data.dart';\n\n";
+    dartMap += '// ignore: constant_identifier_names\n';
+    dartMap += 'const Map<String, String> $locale = ${json};';
+    return dartMap;
   }
 }

@@ -5,7 +5,7 @@
 Command
 
 ``` console
-flutter pub run excel2lang -e \<extension\> -f \<excel file\> -s \<saved directory\>
+flutter pub run excel2lang -e \<extension\> -f \<excel file\> -d \<saved directory\>
 ```
 
 | Name             | Parameter | Default          |

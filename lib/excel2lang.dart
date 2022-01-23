@@ -14,16 +14,35 @@ Future<void> genLanguageFile(List<String> arguments) async {
         abbr: 'd',
         help: 'Directory for generated file',
         defaultsTo: 'assets/languages')
-    ..addOption('excelPath',
-        abbr: 'f', help: 'Excel relative path', defaultsTo: 'translation.xlsx')
-    ..addOption('extension',
-        abbr: 'e', help: 'Extension for generated file', defaultsTo: 'json')
-    ..addFlag('helpFlag',
-        abbr: 'h', help: 'Print this usage information', negatable: false);
+    ..addOption(
+      'excelPath',
+      abbr: 'f',
+      help: 'Excel relative path',
+      defaultsTo: 'translation.xlsx',
+    )
+    ..addOption(
+      'extension',
+      abbr: 'e',
+      help: 'Extension for generated file',
+      defaultsTo: 'json',
+    )
+    ..addOption(
+      'dartPartOf',
+      abbr: 'p',
+      help: 'Dart file part of which file.',
+      defaultsTo: 'languge',
+    )
+    ..addFlag(
+      'helpFlag',
+      abbr: 'h',
+      help: 'Print this usage information',
+      negatable: false,
+    );
   final ArgResults argResults = argParser.parse(arguments);
   final String _excelPath = argResults['excelPath'];
   final String _saveDir = argResults['saveDir'];
   final String _extension = argResults['extension'];
+  final String _dartPartOf = argResults['dartPartOf'];
 
   if (argResults['helpFlag']) {
     stdout.writeln(argParser.usage);
@@ -57,7 +76,11 @@ Future<void> genLanguageFile(List<String> arguments) async {
             if (rowIndex == 0) {
               // first row, add all language object
               _languages[columnIndex] = Language(
-                  locale: column.value, dir: _dir, extension: _extension);
+                locale: column.value,
+                dir: _dir,
+                extension: _extension,
+                dartPartOf: _dartPartOf,
+              );
             } else if (columnIndex != 0) {
               // add translation to Map
               String key = row[0]!.value.toString(); // json key
@@ -77,7 +100,7 @@ Future<void> genLanguageFile(List<String> arguments) async {
         data += "part '${lang.locale}.dart';\n";
       });
       data += '\n';
-      data += 'Map<String, Map<String, String>> language_data = {\n';
+      data += 'Map<String, Map<String, String>> language_data = const {\n';
       _languages.values.forEach((lang) {
         data += "\t'${lang.locale}': ${lang.locale},\n";
       });
@@ -91,8 +114,8 @@ Future<void> genLanguageFile(List<String> arguments) async {
     await Future.forEach<Language>(_languages.values, (lang) async {
       await lang.generateLanguageFile();
     });
-    await _generateLanguageDataFile();
-    print('Language file is generated finish');
+    // await _generateLanguageDataFile();
+    // print('Language file is generated finish');
   } catch (e) {
     print(e);
   }

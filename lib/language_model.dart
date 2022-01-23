@@ -4,9 +4,15 @@ class Language {
   late final String locale;
   late final Directory dir;
   late final String extension;
+  late final String dartPartOf;
   Map<String, dynamic> lang = Map();
 
-  Language({required this.locale, required this.dir, required this.extension});
+  Language({
+    required this.locale,
+    required this.dir,
+    required this.extension,
+    required this.dartPartOf,
+  });
 
   Future<void> generateLanguageFile() async {
     if (!dir.existsSync()) await dir.create(recursive: true);
@@ -32,9 +38,11 @@ class Language {
   }
 
   String _dartMap(String json) {
-    String dartMap = "part of 'language_data.dart';\n\n";
-    dartMap += '// ignore: constant_identifier_names\n';
-    dartMap += 'const Map<String, String> $locale = ${json};';
+    List<String> localeList = locale.split('_');
+    String variableName = '${localeList[0]}${localeList[1].toUpperCase()}';
+    String dartMap = "part of '$dartPartOf.dart';\n\n";
+    // dartMap += '// ignore: constant_identifier_names\n';
+    dartMap += 'const Map<String, String> $variableName = ${json};';
     return dartMap;
   }
 }
